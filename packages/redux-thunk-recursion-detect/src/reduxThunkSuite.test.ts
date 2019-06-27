@@ -1,10 +1,10 @@
 import chai from 'chai';
-import thunkMiddleware from '../dist/reduxThunkRecursionDetect.esm.js';
+import thunkMiddleware from './reduxThunkRecursionDetect';
 
 describe('thunk middleware', () => {
-  const doDispatch = () => {};
-  const doGetState = () => {};
-  const nextHandler = thunkMiddleware({ dispatch: doDispatch, getState: doGetState });
+  const doDispatch: any = () => {};
+  const doGetState: any = () => {};
+  const nextHandler : any = thunkMiddleware({ dispatch: doDispatch, getState: doGetState });
 
   it('must return a function to handle next', () => {
     chai.assert.isFunction(nextHandler);
@@ -13,7 +13,7 @@ describe('thunk middleware', () => {
 
   describe('handle next', () => {
     it('must return a function to handle action', () => {
-      const actionHandler = nextHandler();
+      const actionHandler : any = nextHandler();
 
       chai.assert.isFunction(actionHandler);
       chai.assert.strictEqual(actionHandler.length, 1);
@@ -23,7 +23,7 @@ describe('thunk middleware', () => {
       it('must run the given action function with dispatch and getState', (done) => {
         const actionHandler = nextHandler();
 
-        actionHandler((dispatch, getState) => {
+        actionHandler((dispatch: any, getState: any) => {
           chai.assert.isFunction(dispatch);
           chai.assert.strictEqual(getState, doGetState);
           done();
@@ -33,7 +33,7 @@ describe('thunk middleware', () => {
       it('must pass action to next if not a function', (done) => {
         const actionObj = {};
 
-        const actionHandler = nextHandler((action) => {
+        const actionHandler = nextHandler((action: any) => {
           chai.assert.strictEqual(action, actionObj);
           done();
         });
@@ -70,7 +70,7 @@ describe('thunk middleware', () => {
   describe('handle errors', () => {
     it('must throw if argument is non-object', (done) => {
       try {
-        thunkMiddleware();
+        thunkMiddleware(undefined as any);
       } catch (err) {
         done();
       }
@@ -80,10 +80,11 @@ describe('thunk middleware', () => {
   describe('withExtraArgument', () => {
     it('must pass the third argument', (done) => {
       const extraArg = { lol: true };
-      thunkMiddleware.withExtraArgument(extraArg)({
+      const thunkPrime = thunkMiddleware.withExtraArgument(extraArg) as any
+      thunkPrime({
         dispatch: doDispatch,
         getState: doGetState,
-      })()((dispatch, getState, arg) => {
+      })()((dispatch: any, getState: any, arg: any) => {
         chai.assert.isFunction(dispatch);
         chai.assert.strictEqual(getState, doGetState);
         chai.assert.strictEqual(arg, extraArg);
